@@ -4,7 +4,7 @@ LuaLaTeXで編集・出力する、独立した2種類の書類です。本文�
 
 ## サンプル
 
-以下は架空のデータを使ってビルドした出力例です。画像の日付・経歴はサンプル用です。
+以下はスター・ウォーズに着想を得た非公式の架空サンプルを使ってビルドした出力例です。画像の日付・経歴はサンプル用です。
 
 ### 履歴書（A4・2ページ）
 
@@ -89,3 +89,7 @@ TEXINPUTS=../../templates/career//: latexmk -g -lualatex career.tex  # private/c
 git check-ignore -v private/resume/resume.tex private/resume/resume.pdf private/career/career.tex private/career/career.pdf
 git status --short
 ```
+
+## ライセンス
+
+このリポジトリの自作部分は[MITライセンス](LICENSE)で提供します。サンプルに登場する第三者のキャラクター・名称や、依存ソフトウェア・フォントの権利は、このライセンスの対象ではありません。
