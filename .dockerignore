@@ -1,0 +1,3 @@
+# The build installs tools only; no resume data is needed in the image.
+*
+!Dockerfile

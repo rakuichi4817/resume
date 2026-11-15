@@ -1,0 +1,114 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{career}[2026/09/07 Japanese career history layout]
+\RequirePackage{geometry}
+\RequirePackage{luatexja-fontspec}
+\RequirePackage{xcolor}
+\RequirePackage{url}
+\RequirePackage{hyperref}
+\geometry{a4paper,left=15mm,right=15mm,top=18mm,bottom=18mm}
+\setmainjfont[BoldFont=ipaexg.ttf,BoldFeatures={FakeBold=2}]{ipaexg.ttf}
+\setsansjfont[BoldFont=ipaexg.ttf,BoldFeatures={FakeBold=2}]{ipaexg.ttf}
+\setmainfont{Nimbus Sans}
+\setsansfont{Nimbus Sans}
+\urlstyle{same}
+\hypersetup{
+  colorlinks=true,
+  urlcolor=blue,
+  linkcolor=black,
+  pdfborder={0 0 0}
+}
+\pagestyle{plain}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{1.5mm}
+\AtBeginDocument{\fontsize{10.95pt}{17pt}\selectfont}
+\newcommand{\CareerHeader}[2]{%
+  {\centering\fontsize{19pt}{25pt}\selectfont\bfseries 職務経歴書\par}
+  \vspace{3mm}{\raggedleft #1\par
+    \hfill\vbox{\hbox{氏名：#2}\kern1pt\hrule height .4pt}\par}\vspace{3mm}}
+\newcommand{\CareerSection}[1]{%
+  \par\addvspace{5mm}\noindent{\large\bfseries【#1】}\par\nobreak}
+\newcommand{\CareerHeading}[1]{%
+  \par\addvspace{2mm}{\bfseries #1}\par\nobreak}
+\newcommand{\CareerCompany}[3]{%
+  \par\ifdim\dimexpr\pagegoal-\pagetotal-\pagedepth\relax<80mm
+    \newpage\fi
+  \CareerHeading{会社：#1}\noindent 在職期間：#2\par\nobreak
+  \noindent 所属：#3\par\nobreak}
+\newcommand{\CareerBullet}[2][0]{%
+  \par\begingroup\hangindent=\dimexpr #1em+1em\relax\hangafter=1
+  \noindent\hspace*{#1em}\makebox[1em][l]{\textbullet}#2\par\endgroup}
+\newcommand{\CareerField}[2]{\CareerHeading{[#1]}#2\par}
+
+\newbox\CareerPeriod
+\newbox\CareerBody
+\newbox\CareerTools
+\newbox\CareerPart
+\newdimen\CareerAvailable
+\newdimen\CareerHeight
+\newdimen\CareerLeftWidth
+\newdimen\CareerBodyWidth
+\newdimen\CareerRightWidth
+\CareerLeftWidth=25mm
+\CareerRightWidth=43mm
+\CareerBodyWidth=\dimexpr\textwidth-\CareerLeftWidth-\CareerRightWidth-1.6pt\relax
+\newif\ifCareerMore
+\newcommand{\CareerColumnSetup}[1]{%
+  \hsize=\dimexpr#1-4mm\relax\linewidth=\hsize
+  \fontsize{10pt}{15.5pt}\selectfont\parskip=1.5mm
+  \emergencystretch=1em\pretolerance=1000
+  \clubpenalty=0\widowpenalty=0}
+\newcommand{\CareerGridHeader}{%
+  \hrule height .4pt
+  \hbox{\setlength{\fboxsep}{0pt}\colorbox{black!12}{%
+  \hbox to \textwidth{\vrule width .4pt\relax%
+    \CareerHeaderCell{\CareerLeftWidth}{期間}\vrule width .4pt\relax%
+    \CareerHeaderCell{\CareerBodyWidth}{業務内容}\vrule width .4pt\relax%
+    \CareerHeaderCell{\CareerRightWidth}{人数 / 役割 / 言語 / 技術}\vrule width .4pt\relax}}}
+  \hrule height .4pt}
+\newcommand{\CareerHeaderCell}[2]{%
+  \hbox to #1{\hfil\rule[-2.5mm]{0pt}{8mm}\fontsize{9pt}{12pt}\selectfont\bfseries #2\hfil}}
+\newcommand{\CareerSplitCell}[2]{%
+  \ifdim\dimexpr\ht#1+\dp#1\relax>\CareerHeight
+    \setbox\CareerPart=\vsplit#1 to \CareerHeight%
+  \else\setbox\CareerPart=\box#1\fi%
+  % Persist the remainder outside the enclosing frame's box groups.
+  \global\setbox#1=\box#1%
+  \vbox{\hsize=#2\vskip2mm
+    \hbox to #2{\hskip2mm\vbox to \CareerHeight{\unvbox\CareerPart\vfil}\hfil}
+    \vskip2mm}}
+% Split each column's paragraph material independently, never an entire table row.
+% This also permits a single long bullet or paragraph to continue on the next page.
+\NewDocumentEnvironment{CareerProject}{+m m +m +b}{%
+  \par\begingroup
+  \setbox\CareerPeriod=\vbox{\CareerColumnSetup{\CareerLeftWidth}\centering #1\par}
+  \setbox\CareerBody=\vbox{\CareerColumnSetup{\CareerBodyWidth}
+    {\bfseries #2\par}\nobreak #4\par}
+  \setbox\CareerTools=\vbox{\CareerColumnSetup{\CareerRightWidth}#3\par}
+  \splittopskip=\topskip\splitmaxdepth=0pt\vbadness=10000
+  \loop
+    % Reserve the header, padding and pending vertical glue/depth as well.
+    \CareerAvailable=\dimexpr\pagegoal-\pagetotal-\pagedepth-18mm\relax
+    \ifdim\CareerAvailable>\dimexpr\textheight-18mm\relax
+      \CareerAvailable=\dimexpr\textheight-18mm\relax\fi
+    \ifdim\CareerAvailable<35mm
+      \newpage\CareerAvailable=\dimexpr\textheight-18mm\relax\fi
+    \CareerHeight=\dimexpr\ht\CareerBody+\dp\CareerBody\relax
+    \ifdim\dimexpr\ht\CareerTools+\dp\CareerTools\relax>\CareerHeight
+      \CareerHeight=\dimexpr\ht\CareerTools+\dp\CareerTools\relax\fi
+    \ifdim\dimexpr\ht\CareerPeriod+\dp\CareerPeriod\relax>\CareerHeight
+      \CareerHeight=\dimexpr\ht\CareerPeriod+\dp\CareerPeriod\relax\fi
+    \ifdim\CareerHeight>\CareerAvailable\CareerHeight=\CareerAvailable\fi
+    \nointerlineskip\vbox{\offinterlineskip\CareerGridHeader
+      \hbox to \textwidth{\vrule width .4pt\relax%
+        \CareerSplitCell{\CareerPeriod}{\CareerLeftWidth}\vrule width .4pt\relax%
+        \CareerSplitCell{\CareerBody}{\CareerBodyWidth}\vrule width .4pt\relax%
+        \CareerSplitCell{\CareerTools}{\CareerRightWidth}\vrule width .4pt\relax}
+      \hrule height .4pt}\par
+    \CareerMorefalse
+    \ifvoid\CareerBody\else\CareerMoretrue\fi
+    \ifvoid\CareerTools\else\CareerMoretrue\fi
+    \ifvoid\CareerPeriod\else\CareerMoretrue\fi
+    \ifCareerMore\newpage\fi
+  \ifCareerMore\repeat
+  \endgroup
+}{}

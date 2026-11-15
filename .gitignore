@@ -1,0 +1,27 @@
+# Personal source files, generated documents, photos, and reference documents.
+private/
+references/
+templates/resume/resume.example.pdf
+templates/career/career.example.pdf
+
+# LaTeX intermediates.
+*.aux
+*.log
+*.fls
+*.fdb_latexmk
+*.out
+*.toc
+*.lof
+*.lot
+*.synctex.gz
+*.synctex(busy)
+*.xdv
+*.dvi
+*.nav
+*.snm
+*.vrb
+*.bcf
+*.run.xml
+*.blg
+*.bbl
+*.lol

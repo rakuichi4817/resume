@@ -1,0 +1,58 @@
+[tasks."docker:build"]
+description = "LaTeX用Dockerイメージを作成"
+run = "docker build -t resume-latex ."
+
+[tasks.build]
+description = "匿名サンプルの履歴書と職務経歴書をビルド"
+run = ["mise run build:resume", "mise run build:career"]
+
+[tasks."build:resume"]
+description = "匿名サンプルの履歴書をDockerでビルド"
+run = 'docker run --rm --user "$(id -u):$(id -g)" -e HOME=/tmp -v "$PWD:/work" -w /work/templates/resume resume-latex latexmk -lualatex resume.example.tex'
+
+[tasks."build:career"]
+description = "匿名サンプルの職務経歴書をDockerでビルド"
+run = 'docker run --rm --user "$(id -u):$(id -g)" -e HOME=/tmp -v "$PWD:/work" -w /work/templates/career resume-latex latexmk -lualatex career.example.tex'
+
+[tasks.rebuild]
+description = "匿名サンプルの履歴書と職務経歴書を強制ビルド"
+run = ["mise run rebuild:resume", "mise run rebuild:career"]
+
+[tasks."rebuild:resume"]
+description = "匿名サンプルの履歴書を強制ビルド"
+run = 'docker run --rm --user "$(id -u):$(id -g)" -e HOME=/tmp -v "$PWD:/work" -w /work/templates/resume resume-latex latexmk -g -lualatex resume.example.tex'
+
+[tasks."rebuild:career"]
+description = "匿名サンプルの職務経歴書を強制ビルド"
+run = 'docker run --rm --user "$(id -u):$(id -g)" -e HOME=/tmp -v "$PWD:/work" -w /work/templates/career resume-latex latexmk -g -lualatex career.example.tex'
+
+[tasks."build:private"]
+description = "本番用の履歴書と職務経歴書をビルド"
+run = ["mise run build:private:resume", "mise run build:private:career"]
+
+[tasks."build:private:resume"]
+description = "本番用の履歴書をDockerでビルド"
+run = 'docker run --rm --user "$(id -u):$(id -g)" -e HOME=/tmp -e TEXINPUTS=/work/templates/resume//: -v "$PWD:/work" -w /work/private/resume resume-latex latexmk -lualatex resume.tex'
+
+[tasks."build:private:career"]
+description = "本番用の職務経歴書をDockerでビルド"
+run = 'docker run --rm --user "$(id -u):$(id -g)" -e HOME=/tmp -e TEXINPUTS=/work/templates/career//: -v "$PWD:/work" -w /work/private/career resume-latex latexmk -lualatex career.tex'
+
+[tasks."rebuild:private"]
+description = "本番用の履歴書と職務経歴書を強制ビルド"
+run = ["mise run rebuild:private:resume", "mise run rebuild:private:career"]
+
+[tasks."rebuild:private:resume"]
+description = "本番用の履歴書を強制ビルド"
+run = 'docker run --rm --user "$(id -u):$(id -g)" -e HOME=/tmp -e TEXINPUTS=/work/templates/resume//: -v "$PWD:/work" -w /work/private/resume resume-latex latexmk -g -lualatex resume.tex'
+
+[tasks."rebuild:private:career"]
+description = "本番用の職務経歴書を強制ビルド"
+run = 'docker run --rm --user "$(id -u):$(id -g)" -e HOME=/tmp -e TEXINPUTS=/work/templates/career//: -v "$PWD:/work" -w /work/private/career resume-latex latexmk -g -lualatex career.tex'
+
+[tasks.clean]
+description = "匿名サンプルのLaTeX補助ファイルを削除"
+run = [
+  'docker run --rm --user "$(id -u):$(id -g)" -e HOME=/tmp -v "$PWD:/work" -w /work/templates/resume resume-latex latexmk -c resume.example.tex',
+  'docker run --rm --user "$(id -u):$(id -g)" -e HOME=/tmp -v "$PWD:/work" -w /work/templates/career resume-latex latexmk -c career.example.tex',
+]

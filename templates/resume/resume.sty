@@ -1,0 +1,226 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{resume}[2026/09/07 Reference-based Japanese resume]
+\RequirePackage{array}
+\RequirePackage{graphicx}
+\RequirePackage{longtable}
+\RequirePackage{luatexja-fontspec}
+\RequirePackage{tikz}
+\RequirePackage{geometry}
+\RequirePackage{pdftexcmds}
+\geometry{a4paper,left=19mm,right=14.5mm,top=13mm,bottom=20mm}
+\setmainjfont{ipaexm.ttf}
+\setsansjfont{ipaexg.ttf}
+\setmainfont{C059}
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0pt}
+\setlength{\tabcolsep}{1.6mm}
+\setlength{\arrayrulewidth}{0.4pt}
+\setlength{\LTleft}{0pt}
+\setlength{\LTright}{0pt}
+\setlength{\LTpre}{0pt}
+\setlength{\LTpost}{0pt}
+
+% Personal data belong in the document, not in the layout package.
+\newcommand{\ResumeDate}{}
+\newcommand{\NameKana}{}
+\newcommand{\FullName}{}
+\newcommand{\BirthDate}{}
+\newcommand{\Age}{}
+\newcommand{\Gender}{}
+\newcommand{\PostalCode}{}
+\newcommand{\AddressKana}{}
+\newcommand{\Address}{}
+\newcommand{\ContactPostalCode}{}
+\newcommand{\ContactKana}{}
+\newcommand{\ContactAddress}{}
+\newcommand{\Phone}{}
+\newcommand{\Email}{}
+\newcommand{\HomePhone}{（　　　　　）\\[2mm]―}
+\newcommand{\HomeFax}{（　　　　　）\\[2mm]―}
+\newcommand{\ContactPhone}{（　　　　　）\\[2mm]―}
+\newcommand{\ContactFax}{（　　　　　）\\[2mm]―}
+\newcommand{\PhotoFile}{}
+\newcommand{\NearestStation}{}
+\newcommand{\Dependents}{}
+\newcommand{\Spouse}{}
+\newcommand{\SpouseSupport}{}
+\newcommand{\Hobbies}{}
+\newcommand{\SelfPR}{}
+\newcommand{\Request}{}
+
+\makeatletter
+\def\ResumeEducationRows{}
+\def\ResumeEmploymentRows{}
+\def\ResumeQualificationRows{}
+\newcommand{\ResumeEducationEntry}[4]{\g@addto@macro\ResumeEducationRows{#1&#2&#3\hfill\mbox{#4}\hspace*{9mm}\\\hline}}
+\newcommand{\ResumeEmploymentEntry}[4]{\g@addto@macro\ResumeEmploymentRows{#1&#2&#3\quad #4\\\hline}}
+\newcommand{\ResumeEmploymentNote}[1]{\g@addto@macro\ResumeEmploymentRows{&&\hspace*{1em}#1\\\hline}}
+\newcommand{\ResumeEmploymentCurrent}{\ResumeEmploymentNote{現在に至る}}
+\newcommand{\ResumeQualificationEntry}[4]{\g@addto@macro\ResumeQualificationRows{#1&#2&#3\quad #4\\\hline}}
+\newcommand{\ResumeHobbies}[1]{\renewcommand{\Hobbies}{#1}}
+\newcommand{\ResumePR}[1]{\renewcommand{\SelfPR}{#1}}
+\newcommand{\ResumeRequest}[1]{\renewcommand{\Request}{#1}}
+\makeatother
+
+\newcommand{\ResumeCircle}[1]{\tikz[baseline=(text.base)]{\node[draw,circle,inner sep=1pt,line width=.5pt] (text) {#1};}}
+\makeatletter
+\newcommand{\ResumeChoice}[3]{%
+  \ifnum\pdf@strcmp{#1}{#2}=0 \ResumeCircle{#2}\else #2\fi
+  \enspace ・\enspace
+  \ifnum\pdf@strcmp{#1}{#3}=0 \ResumeCircle{#3}\else #3\fi}
+\newcommand{\ResumePhoto}{%
+  \ifnum\pdf@strcmp{\PhotoFile}{}=0
+    \ResumePhotoPlaceholder
+  \else
+    \IfFileExists{\PhotoFile}{\includegraphics[width=30mm,height=40mm,keepaspectratio]{\PhotoFile}}{\ResumePhotoPlaceholder}%
+  \fi}
+\makeatother
+\newcommand{\ResumePhotoPlaceholder}{%
+    \begin{tikzpicture}[x=1mm,y=1mm]
+      \draw[line width=.4pt] (0,0) rectangle (30,40);
+      \node[align=center,font=\fontsize{9pt}{14pt}\selectfont] at (15,20)
+        {写真貼付欄\\40mm × 30mm};
+    \end{tikzpicture}}
+
+% Millimetre coordinates keep the joined personal/contact frame faithful to the original.
+\newcommand{\ResumeHeader}{%
+  \noindent\begin{tikzpicture}[x=1mm,y=-1mm,
+    every node/.style={inner sep=0pt,font=\fontsize{8pt}{11pt}\selectfont},
+    thin/.style={line width=.4pt},outer/.style={line width=1pt},
+    dotted/.style={line width=.3pt,dash pattern=on .25pt off .65pt}]
+    \path[use as bounding box] (0,0) rectangle (176.5,113.5);
+    \node[anchor=north west,font=\sffamily\fontsize{23pt}{26pt}\selectfont] at (0,2) {履歴書};
+    \node[anchor=east] at (136.5,15.5) {西暦　\ResumeDate 現在};
+    \begin{scope}[overlay]
+    \draw[outer] (0,19)--(138.5,19)--(138.5,60.5)--(176.5,60.5)--(176.5,113.5)--(0,113.5)--cycle;
+    \draw[thin] (0,41)--(138.5,41) (0,54)--(138.5,54)
+      (0,60.5)--(138.5,60.5) (0,87)--(176.5,87)
+      (138.5,60.5)--(138.5,113.5)
+      (15,41)--(15,54) (110,41)--(110,54)
+      (20.5,54)--(20.5,60.5) (55.5,54)--(55.5,60.5) (69,54)--(69,60.5);
+    \draw[dotted] (0,26)--(138.5,26) (0,67.5)--(138.5,67.5)
+      (0,93.5)--(138.5,93.5) (138.5,73.75)--(176.5,73.75)
+      (138.5,100.25)--(176.5,100.25);
+    \node[anchor=west] at (1.5,22.5) {ふりがな};
+    \node at (69.25,22.5) {\NameKana};
+    \node[anchor=west] at (1.5,30) {氏　　名};
+    \node[font=\fontsize{15pt}{18pt}\selectfont] at (69.25,35.5) {\FullName};
+    \node[anchor=north west] at (1.5,43) {生年月日};
+    \node[anchor=north west] at (17,43) {西暦};
+    \node[font=\fontsize{11pt}{13pt}\selectfont] at (67,50.5) {\BirthDate　（満 \Age 歳）};
+    \node at (124,50.5) {\ResumeChoice{\Gender}{男}{女}};
+    \node[anchor=west] at (1.5,57.25) {携帯電話番号};
+    \node[anchor=west,font=\fontsize{10.5pt}{12pt}\selectfont] at (22,57.25) {\Phone};
+    \node at (62.25,57.25) {E-MAIL};
+    \node[anchor=west,font=\fontsize{9pt}{12pt}\selectfont] at (70.5,57.25) {\Email};
+    \node at (158,37.5) {\ResumePhoto};
+    \node[anchor=west] at (1.5,64) {ふりがな};
+    \node[anchor=west,font=\fontsize{8.5pt}{10pt}\selectfont] at (21,64) {\AddressKana};
+    \node[anchor=west] at (1.5,70.5) {現住所〒\PostalCode};
+    \node[text width=134mm,align=center,font=\fontsize{11pt}{14pt}\selectfont] at (69.25,77.5) {\Address};
+    \node[anchor=west] at (1.5,90.25) {ふりがな};
+    \node[anchor=west] at (21,90.25) {\ContactKana};
+    \node[anchor=west] at (1.5,96.5) {連絡先〒\ContactPostalCode　　（休暇中住所）};
+    \node[text width=134mm,align=center,font=\fontsize{10pt}{14pt}\selectfont] at (69.25,104) {\ContactAddress};
+    \node[anchor=north west] at (140,62.5) {電話};
+    \node[anchor=north,align=center] at (158.5,62.5) {\HomePhone};
+    \node[anchor=north west] at (140,75.75) {FAX};
+    \node[anchor=north,align=center] at (158.5,75.75) {\HomeFax};
+    \node[anchor=north west] at (140,89) {電話};
+    \node[anchor=north,align=center] at (158.5,89) {\ContactPhone};
+    \node[anchor=north west] at (140,102.25) {FAX};
+    \node[anchor=north,align=center] at (158.5,102.25) {\ContactFax};
+    \end{scope}
+  \end{tikzpicture}\par}
+
+\newcommand{\ResumeHeavyRule}{\noalign{\hrule height 1pt}}
+\newcommand{\CareerBlank}{&&\\\hline}
+\newcommand{\ResumeSixBlanks}{\CareerBlank\CareerBlank\CareerBlank\CareerBlank\CareerBlank\CareerBlank}
+\newcommand{\ResumeCareerBlanks}{\ResumeSixBlanks\ResumeSixBlanks}
+\newcommand{\ResumeTableHead}[1]{%
+  {\fontsize{8pt}{10pt}\selectfont 西暦}&{\fontsize{8pt}{10pt}\selectfont 月}&
+  \multicolumn{1}{c!{\vrule width 1pt}}{\fontsize{8pt}{10pt}\selectfont #1}\\\hline}
+\newenvironment{ResumeTable}[1]{%
+  \begingroup
+  \fontsize{11.5pt}{13pt}\selectfont
+  % A 6.99mm strut plus the thin rule gives the reference's 7.13mm pitch.
+  \renewcommand{\arraystretch}{1}
+  \begin{longtable}{!{\vrule width 1pt}>{\centering\arraybackslash\rule[-2.25mm]{0pt}{6.99mm}}p{16mm}|>{\centering\arraybackslash}p{9mm}|>{\raggedright\arraybackslash}p{\dimexpr\textwidth-25mm-6\tabcolsep-2pt-2\arrayrulewidth\relax}!{\vrule width 1pt}}
+  \ResumeHeavyRule\ResumeTableHead{#1}\endfirsthead
+  \ResumeHeavyRule\ResumeTableHead{#1}\endhead
+  \ResumeHeavyRule\endfoot
+  \ResumeHeavyRule\endlastfoot
+}{\end{longtable}\endgroup}
+\newcommand{\ResumeCareerTable}{%
+  \begin{ResumeTable}{学歴・職歴}
+    &&\multicolumn{1}{c!{\vrule width 1pt}}{学歴}\\*\hline
+    \ResumeEducationRows
+    &&\multicolumn{1}{c!{\vrule width 1pt}}{職歴}\\*\hline
+    \ResumeEmploymentRows
+    &&\hfill 以上\\\hline
+    % The default twelve blanks can be adjusted per document without changing the style.
+    \ResumeCareerBlanks
+  \end{ResumeTable}}
+\newcommand{\ResumeQualificationTable}{%
+  \begin{ResumeTable}{免許・資格}\ResumeQualificationRows\CareerBlank\CareerBlank\end{ResumeTable}}
+\newcommand{\ResumeFamily}{%
+  \noindent\begin{tikzpicture}[x=1mm,y=-1mm,every node/.style={inner sep=0pt,font=\fontsize{8pt}{11pt}\selectfont}]
+    \path[use as bounding box] (0,0) rectangle (176.5,13.5);
+    \begin{scope}[overlay]
+    \draw[line width=1pt] (0,0) rectangle (176.5,13.5);
+    \draw[line width=.4pt] (65.5,0)--(65.5,13.5) (110,0)--(110,13.5) (141.5,0)--(141.5,13.5);
+    \draw[line width=.3pt,dash pattern=on .25pt off .65pt] (0,6.75)--(65.5,6.75);
+    \node[anchor=west] at (1.5,3.5) {最寄り駅};
+    \node at (32.75,10) {\NearestStation};
+    \node[anchor=west] at (67,3.5) {扶養家族数};
+    \node[anchor=west] at (67,10) {（配偶者を除く）};
+    \node[anchor=east] at (104,10) {\Dependents 人};
+    \node[anchor=west] at (111.5,3.5) {配偶者};
+    \node at (125.75,10) {\ResumeChoice{\Spouse}{有}{無}};
+    \node[anchor=west] at (143,3.5) {配偶者の扶養義務};
+    \node at (159,10) {\ResumeChoice{\SpouseSupport}{有}{無}};
+    \end{scope}
+  \end{tikzpicture}\par}
+
+\newbox\ResumeTextBox
+\newbox\ResumeTextPart
+\newdimen\ResumeAvailable
+\newdimen\ResumeBoxHeight
+% Split paragraph material, not a minipage: even a single long paragraph may span pages.
+\newcommand{\ResumeBox}[3][28mm]{%
+  \par\begingroup
+  \fontsize{11pt}{18pt}\selectfont
+  \setbox\ResumeTextBox=\vbox{\hsize=\dimexpr\textwidth-10mm-2pt\relax
+    \linewidth=\hsize\parindent=0pt\parskip=0pt\relax #3\par}%
+  \loop
+    \ResumeAvailable=\dimexpr\pagegoal-\pagetotal-1mm\relax
+    \ifdim\ResumeAvailable>\textheight \ResumeAvailable=\textheight\fi
+    \ifdim\ResumeAvailable<#1\relax \newpage\ResumeAvailable=\textheight\fi
+    \ResumeBoxHeight=\dimexpr\ht\ResumeTextBox+\dp\ResumeTextBox+12mm\relax
+    \ifdim\ResumeBoxHeight>\ResumeAvailable
+      \splittopskip=\topskip\splitmaxdepth=0pt
+      \setbox\ResumeTextPart=\vsplit\ResumeTextBox to \dimexpr\ResumeAvailable-12mm\relax
+      \ResumeBoxHeight=\ResumeAvailable
+    \else
+      \setbox\ResumeTextPart=\box\ResumeTextBox
+      \ifdim\ResumeBoxHeight<#1\relax \ResumeBoxHeight=#1\relax\fi
+    \fi
+    \noindent\vbox{\hrule height 1pt
+      \hbox{\vrule width 1pt\vbox to \dimexpr\ResumeBoxHeight-2pt\relax{%
+        \hsize=\dimexpr\textwidth-2pt\relax
+        \vskip1mm\hbox to \hsize{\hskip1.5mm #2\hfil}\vskip1mm
+        \hbox to \hsize{\hskip5mm\box\ResumeTextPart\hfil}\vfil
+      }\vrule width 1pt}\hrule height 1pt}\par
+    \ifvoid\ResumeTextBox\else\newpage\fi
+  \unless\ifvoid\ResumeTextBox\repeat
+  \endgroup}
+
+\newcommand{\makeResume}{%
+  \ResumeHeader
+  \vspace{6.8mm}\ResumeCareerTable
+  \vspace{6.8mm}\ResumeQualificationTable
+  \vspace{6.8mm}\ResumeFamily
+  \vspace{6.8mm}\ResumeBox[32.5mm]{趣味・特技}{\Hobbies}
+  \vspace{6.8mm}\ResumeBox{自己 PR}{\SelfPR}
+  \vspace{6.8mm}\ResumeBox[28.5mm]{本人希望記入欄}{\Request}}

@@ -1,0 +1,39 @@
+% !TEX program = lualatex
+% Fictional sample inspired by Star Wars. Keep personal data in private/.
+\documentclass[a4paper]{ltjsarticle}
+\usepackage{resume}
+
+\renewcommand{\ResumeDate}{\number\year 年　\number\month 月　\number\day 日}
+\renewcommand{\NameKana}{よーだ}
+\renewcommand{\FullName}{ヨーダ}
+\renewcommand{\BirthDate}{1950年　1月　1日生}
+\renewcommand{\Age}{76}
+\renewcommand{\Gender}{男}
+\renewcommand{\PostalCode}{000-0000}
+\renewcommand{\AddressKana}{こるさんと　じぇだいせいどう}
+\renewcommand{\Address}{惑星コルサント　ジェダイ聖堂（架空）}
+\renewcommand{\Phone}{000-0000-0000}
+\renewcommand{\Email}{yoda@example.com}
+\renewcommand{\PhotoFile}{}
+\renewcommand{\ContactAddress}{同上}
+\renewcommand{\NearestStation}{銀河交通　聖堂前駅（架空）}
+\renewcommand{\Dependents}{0}
+\renewcommand{\Spouse}{無}
+\renewcommand{\SpouseSupport}{無}
+
+\ResumeEducationEntry{1968}{4}{ジェダイ聖堂　修練課程}{入門}
+\ResumeEducationEntry{1972}{3}{ジェダイ聖堂　修練課程}{修了}
+\ResumeEducationEntry{1972}{4}{ジェダイ騎士団　パダワン課程}{入門}
+\ResumeEducationEntry{1980}{3}{ジェダイ騎士団　パダワン課程}{修了}
+\ResumeEmploymentEntry{1980}{4}{ジェダイ騎士団}{加入}
+\ResumeEmploymentNote{ジェダイ・マスターとして育成・調停を担当（架空）}
+\ResumeEmploymentCurrent
+\ResumeQualificationEntry{1980}{3}{ジェダイ・ナイト認定（架空）}{取得}
+\ResumeQualificationEntry{1990}{4}{ジェダイ・マスター認定（架空）}{取得}
+\ResumeHobbies{瞑想\par 若手の指導}
+\ResumePR{対話と忍耐を大切にし、若手の育成と銀河の平和に貢献します。}
+\ResumeRequest{銀河の平和を重視します。}
+
+\begin{document}
+\makeResume
+\end{document}
